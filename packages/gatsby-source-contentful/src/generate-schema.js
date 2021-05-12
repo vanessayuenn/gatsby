@@ -70,7 +70,49 @@ const ContentfulDataTypes = new Map([
   ],
 ])
 
-const getLinkFieldType = (linkType, field) => {
+const unionsNameSet = new Set()
+
+const getLinkFieldType = (linkType, field, schema, createTypes) => {
+  // Check for validations
+  const validations = field?.items?.validations
+
+  if (validations) {
+    // We only handle content type validations
+    const linkContentTypeValidation = validations.find(
+      ({ linkContentType }) => !!linkContentType
+    )
+    // { validations: [ { linkContentType: [Array] } ] }
+    if (linkContentTypeValidation) {
+      const { linkContentType } = linkContentTypeValidation
+      const translatedTypeNames = linkContentType.map(makeTypeName)
+
+      // @todo Single content type
+
+      // Multiple content types
+      const unionName = [
+        `UnionContentfulContentTypes`,
+        ...translatedTypeNames,
+      ].join(``)
+
+      if (!unionsNameSet.has(unionName)) {
+        unionsNameSet.add(unionName)
+        createTypes(
+          schema.buildUnionType({
+            name: unionName,
+            types: translatedTypeNames,
+          })
+        )
+      }
+
+      return {
+        type: unionName,
+        extensions: {
+          link: { by: `id`, from: `ContentfulEntry___NODE` },
+        },
+      }
+    }
+  }
+
   return {
     type: `Contentful${linkType}`,
     extensions: {
@@ -79,19 +121,19 @@ const getLinkFieldType = (linkType, field) => {
   }
 }
 
-const translateFieldType = field => {
+const translateFieldType = (field, schema, createTypes) => {
   let fieldType
   if (field.type === `Array`) {
     // Arrays of Contentful Links or primitive types
     const fieldData =
       field.items.type === `Link`
-        ? getLinkFieldType(field.items.linkType, field)
+        ? getLinkFieldType(field.items.linkType, field, schema, createTypes)
         : translateFieldType(field.items)
 
     fieldType = { ...fieldData, type: `[${fieldData.type}]` }
   } else if (field.type === `Link`) {
     // Contentful Link (reference) field types
-    fieldType = getLinkFieldType(field.linkType, field)
+    fieldType = getLinkFieldType(field.linkType, field, schema, createTypes)
   } else {
     // Primitive field types
     fieldType = ContentfulDataTypes.get(field.type)(field)
@@ -333,7 +375,7 @@ export function generateSchema({
         if (field.disabled || field.omitted) {
           return
         }
-        fields[field.id] = translateFieldType(field)
+        fields[field.id] = translateFieldType(field, schema, createTypes)
       })
 
       const type = pluginConfig.get(`useNameForId`)
