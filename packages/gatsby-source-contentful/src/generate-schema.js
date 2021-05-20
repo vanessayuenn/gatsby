@@ -84,15 +84,19 @@ const getLinkFieldType = (linkType, field, schema, createTypes) => {
     // { validations: [ { linkContentType: [Array] } ] }
     if (linkContentTypeValidation) {
       const { linkContentType } = linkContentTypeValidation
-      const translatedTypeNames = linkContentType.map(makeTypeName)
+
+      // Full type names for union members, shorter variant for the union type name
+      const translatedTypeNames = linkContentType.map(typeName =>
+        makeTypeName(typeName)
+      )
+      const shortTypeNames = linkContentType.map(typeName =>
+        makeTypeName(typeName, ``)
+      )
 
       // @todo Single content type
 
       // Multiple content types
-      const unionName = [
-        `UnionContentfulContentTypes`,
-        ...translatedTypeNames,
-      ].join(``)
+      const unionName = [`UnionContentful`, ...shortTypeNames].join(``)
 
       if (!unionsNameSet.has(unionName)) {
         unionsNameSet.add(unionName)
