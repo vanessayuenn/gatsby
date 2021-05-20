@@ -107,7 +107,7 @@ const getLinkFieldType = (linkType, field, schema, createTypes) => {
       return {
         type: unionName,
         extensions: {
-          link: { by: `id`, from: `ContentfulEntry___NODE` },
+          link: { by: `id`, from: `${field.id}___NODE` },
         },
       }
     }
@@ -128,7 +128,7 @@ const translateFieldType = (field, schema, createTypes) => {
     const fieldData =
       field.items.type === `Link`
         ? getLinkFieldType(field.items.linkType, field, schema, createTypes)
-        : translateFieldType(field.items)
+        : translateFieldType(field.items, schema, createTypes)
 
     fieldType = { ...fieldData, type: `[${fieldData.type}]` }
   } else if (field.type === `Link`) {
