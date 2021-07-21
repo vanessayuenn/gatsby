@@ -70,6 +70,11 @@ describe(`fetch-retry`, () => {
         `/spaces/${options.spaceId}/environments/master/content_types?skip=0&limit=1000&order=sys.createdAt`
       )
       .reply(200, { items: [] })
+      // Tags
+      .get(
+        `/spaces/${options.spaceId}/environments/master/tags?skip=0&limit=1000&order=sys.createdAt`
+      )
+      .reply(200, { items: [] })
 
     await fetchData({ pluginConfig, reporter })
 

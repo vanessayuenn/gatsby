@@ -167,12 +167,6 @@ Additional config which will get passed to [Contentfuls JS SDK](https://github.c
 
 Use this with caution, you might override values this plugin does set for you to connect to Contentful.
 
-**`enableTags`** [boolean][optional] [default: `false`]
-
-Enable the new [tags feature](https://www.contentful.com/blog/2021/04/08/governance-tagging-metadata/). This will disallow the content type name `tags` till the next major version of this plugin.
-
-Learn how to use them at the [Contentful Tags](#contentful-tags) section.
-
 ## How to query for nodes
 
 Two standard node types are available from Contentful: `Asset` and `ContentType`.
@@ -379,8 +373,6 @@ module.exports = {
 ```
 
 ## [Contentful Tags](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/content-tags)
-
-You need to set the `enableTags` flag to `true` to use this new feature.
 
 ### List available tags
 
