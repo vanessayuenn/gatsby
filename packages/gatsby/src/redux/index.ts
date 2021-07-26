@@ -134,19 +134,31 @@ export const savePartialStateToDisk = (
   optionalPrefix?: string,
   transformState?: <T extends DeepPartial<IGatsbyState>>(state: T) => T
 ): void => {
+  const startTime = Date.now()
+  console.log(`savePartialStateToDisk - Start`)
   const state = store.getState()
   const contents = _.pick(state, slices)
   const savedContents = transformState ? transformState(contents) : contents
 
-  return writeToCache(savedContents, slices, optionalPrefix)
+  const cacheWrite = writeToCache(savedContents, slices, optionalPrefix)
+  const duration = (Date.now() - startTime) / 1000
+  console.log(`savePartialStateToDisk - End - Duration ${duration}`)
+  return cacheWrite
 }
 
 export const loadPartialStateFromDisk = (
   slices: Array<GatsbyStateKeys>,
   optionalPrefix?: string
 ): DeepPartial<IGatsbyState> => {
+  const startTime = Date.now()
+  console.log(`loadPartialStateFromDisk - Start`)
   try {
-    return readFromCache(slices, optionalPrefix) as DeepPartial<IGatsbyState>
+    const cacheState = readFromCache(slices, optionalPrefix) as DeepPartial<
+      IGatsbyState
+    >
+    const duration = (Date.now() - startTime) / 1000
+    console.log(`loadPartialStateFromDisk - End - Duration ${duration}`)
+    return cacheState
   } catch (e) {
     // ignore errors.
   }

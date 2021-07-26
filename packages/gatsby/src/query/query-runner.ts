@@ -175,7 +175,11 @@ export async function queryRunner(
     if (queryJob.isPage) {
       // We need to save this temporarily in cache because
       // this might be incomplete at the moment
+      const startTime = Date.now()
+      console.log(`savePageQueryResult - Start`)
       await savePageQueryResult(program.directory, queryJob.id, resultJSON)
+      const duration = (Date.now() - startTime) / 1000
+      console.log(`savePageQueryResult - End - Duration ${duration}`)
       store.dispatch({
         type: `ADD_PENDING_PAGE_DATA_WRITE`,
         payload: {
