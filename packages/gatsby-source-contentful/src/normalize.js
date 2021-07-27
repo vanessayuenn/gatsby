@@ -1,6 +1,6 @@
 const _ = require(`lodash`)
 
-export const makeTypeName = (type, typePrefix = `Contentful`) =>
+export const makeTypeName = (type, typePrefix = `ContentfulContentType`) =>
   _.upperFirst(_.camelCase(`${typePrefix} ${type}`))
 
 const getLocalizedField = ({ field, locale, localesFallback }) => {
