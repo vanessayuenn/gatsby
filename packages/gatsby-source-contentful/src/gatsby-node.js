@@ -607,7 +607,6 @@ exports.sourceNodes = async (
     reporter.info(`Creating ${tagItems.length} Contentful Tag nodes`)
 
     for (const tag of tagItems) {
-      console.log(`ContentfulTag__${space.sys.id}__${tag.sys.id}`)
       await createNode({
         id: createNodeId(`ContentfulTag__${space.sys.id}__${tag.sys.id}`),
         name: tag.name,

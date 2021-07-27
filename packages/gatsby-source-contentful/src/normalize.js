@@ -441,10 +441,8 @@ exports.createNodesForContentType = ({
           ...entryItemFields,
           ...entryNode,
           metadata: {
-            tags___NODE: entryItem.metadata.tags.map(
-              tag =>
-                console.log(`ContentfulTag__${space.sys.id}__${tag.sys.id}`) ||
-                createNodeId(`ContentfulTag__${space.sys.id}__${tag.sys.id}`)
+            tags___NODE: entryItem.metadata.tags.map(tag =>
+              createNodeId(`ContentfulTag__${space.sys.id}__${tag.sys.id}`)
             ),
           },
         }
