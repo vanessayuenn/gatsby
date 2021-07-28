@@ -81,7 +81,6 @@ const getLinkFieldType = (linkType, field, schema, createTypes) => {
     const linkContentTypeValidation = validations.find(
       ({ linkContentType }) => !!linkContentType
     )
-    // { validations: [ { linkContentType: [Array] } ] }
     if (linkContentTypeValidation) {
       const { linkContentType } = linkContentTypeValidation
       const contentTypes = Array.isArray(linkContentType)
