@@ -74,7 +74,8 @@ const unionsNameSet = new Set()
 
 const getLinkFieldType = (linkType, field, schema, createTypes) => {
   // Check for validations
-  const validations = field?.items?.validations
+  const validations =
+    field.type === `Array` ? field.items?.validations : field?.validations
 
   if (validations) {
     // We only handle content type validations
