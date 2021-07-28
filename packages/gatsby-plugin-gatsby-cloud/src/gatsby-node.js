@@ -33,6 +33,8 @@ exports.onPostBuild = async (
   { store, pathPrefix, reporter },
   userPluginOptions
 ) => {
+  console.log(`ASSET MANIFEST`, assetsManifest)
+
   const pluginData = makePluginData(store, assetsManifest, pathPrefix)
   const pluginOptions = { ...DEFAULT_OPTIONS, ...userPluginOptions }
 
