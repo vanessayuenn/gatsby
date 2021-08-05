@@ -3,7 +3,7 @@ import { BulkQuery } from "./bulk-query"
 export class ProductVariantsQuery extends BulkQuery {
   query(date?: Date): string {
     const publishedStatus = this.pluginOptions.salesChannel
-      ? encodeURIComponent(`${this.pluginOptions.salesChannel}=visible`)
+      ? `'${encodeURIComponent(this.pluginOptions.salesChannel)}:visible'`
       : `published`
 
     const filters = [`status:active`, `published_status:${publishedStatus}`]
@@ -38,6 +38,40 @@ export class ProductVariantsQuery extends BulkQuery {
                       width
                       originalSrc
                       transformedSrc
+                    }
+                    inventoryItem {
+                      id
+                      countryCodeOfOrigin
+                      createdAt
+                      duplicateSkuCount
+                      harmonizedSystemCode
+                      inventoryHistoryUrl
+                      inventoryLevels {
+                        edges {
+                          node {
+                            id
+                            available
+                            location {
+                              id
+                            }
+                          }
+                        }
+                      }
+                      legacyResourceId
+                      locationsCount
+                      provinceCodeOfOrigin
+                      requiresShipping
+                      sku
+                      tracked
+                      trackedEditable {
+                        locked
+                        reason
+                      }
+                      unitCost {
+                        amount
+                        currencyCode
+                      }
+                      updatedAt
                     }
                     inventoryPolicy
                     inventoryQuantity

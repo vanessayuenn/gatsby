@@ -142,7 +142,7 @@ Your Shopify store URL, e.g. some-shop.myshopify.com
 
 An optional array of additional data types to source.
 
-Accepted values: `'orders'`, `'collections'`
+Accepted values: `'orders'`, `'collections'`, `'locations'`
 
 `downloadImages: bool`
 
@@ -159,6 +159,8 @@ Not set by default. If set to a string (example `MyStore`) node names will be `a
 Not set by default. If set to a string (example `My Sales Channel`), only products and collections that are active in that channel will be sourced. If no sales channel is provided, the default behavior is to source products that are available in the online store.
 
 Note: If you set up your site with the Gatsby Cloud Public App integration, `salesChannel` is set for you.
+
+Note: If you want to filter products by a Private App instead of Public App or default sales channel, you have to provide App ID instead of sales channel name.
 
 <div id="images"></div>
 

@@ -126,16 +126,21 @@ class ControllableScript {
     }
 
     this.isRunning = false
-    if (signal) {
-      this.process.kill(signal)
-    } else {
-      this.process.send({
-        type: `COMMAND`,
-        action: {
-          type: `EXIT`,
-          payload: code,
-        },
-      })
+    try {
+      if (signal) {
+        this.process.kill(signal)
+      } else {
+        this.process.send({
+          type: `COMMAND`,
+          action: {
+            type: `EXIT`,
+            payload: code,
+          },
+        })
+      }
+    } catch (err) {
+      // Ignore error if process has crashed or already quit.
+      // Ref: https://github.com/gatsbyjs/gatsby/issues/28011#issuecomment-877302917
     }
 
     return new Promise(resolve => {

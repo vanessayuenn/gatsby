@@ -123,6 +123,10 @@ const getBasicImageProps = (image, args) => {
 }
 
 const createUrl = (imgUrl, options = {}) => {
+  // If radius is -1, we need to pass `max` to the API
+  const cornerRadius =
+    options.cornerRadius === -1 ? `max` : options.cornerRadius
+
   // Convert to Contentful names and filter out undefined/null values.
   const urlArgs = {
     w: options.width || undefined,
@@ -136,6 +140,7 @@ const createUrl = (imgUrl, options = {}) => {
     fit: options.resizingBehavior || undefined,
     f: options.cropFocus || undefined,
     bg: options.background || undefined,
+    r: cornerRadius || undefined,
   }
 
   // Note: qs will ignore keys that are `undefined`. `qs.stringify({a: undefined, b: null, c: 1})` => `b=&c=1`
@@ -149,7 +154,14 @@ const generateImageSource = (
   height,
   toFormat,
   _fit, // We use resizingBehavior instead
-  { jpegProgressive, quality, cropFocus, backgroundColor, resizingBehavior }
+  {
+    jpegProgressive,
+    quality,
+    cropFocus,
+    backgroundColor,
+    resizingBehavior,
+    cornerRadius,
+  }
 ) => {
   // Ensure we stay within Contentfuls Image API limits
   if (width > CONTENTFUL_IMAGE_MAX_SIZE) {
@@ -178,6 +190,7 @@ const generateImageSource = (
     quality,
     jpegProgressive,
     cropFocus,
+    cornerRadius,
   })
   return { width, height, format: toFormat, src }
 }
@@ -514,6 +527,13 @@ const fixedNodeType = ({
         type: ImageCropFocusType,
         defaultValue: null,
       },
+      cornerRadius: {
+        type: GraphQLInt,
+        defaultValue: 0,
+        description: stripIndent`
+         Desired corner radius in pixels. Results in an image with rounded corners.
+         Pass \`-1\` for a full circle/ellipse.`,
+      },
       background: {
         type: GraphQLString,
         defaultValue: null,
@@ -614,6 +634,13 @@ const fluidNodeType = ({
       cropFocus: {
         type: ImageCropFocusType,
         defaultValue: null,
+      },
+      cornerRadius: {
+        type: GraphQLInt,
+        defaultValue: 0,
+        description: stripIndent`
+         Desired corner radius in pixels. Results in an image with rounded corners.
+         Pass \`-1\` for a full circle/ellipse.`,
       },
       background: {
         type: GraphQLString,
@@ -827,6 +854,13 @@ exports.extendNodeType = ({ type, cache, reporter, store }) => {
       cropFocus: {
         type: ImageCropFocusType,
       },
+      cornerRadius: {
+        type: GraphQLInt,
+        defaultValue: 0,
+        description: stripIndent`
+         Desired corner radius in pixels. Results in an image with rounded corners.
+         Pass \`-1\` for a full circle/ellipse.`,
+      },
       quality: {
         type: GraphQLInt,
         defaultValue: 50,
@@ -921,6 +955,13 @@ exports.extendNodeType = ({ type, cache, reporter, store }) => {
         background: {
           type: GraphQLString,
           defaultValue: null,
+        },
+        cornerRadius: {
+          type: GraphQLInt,
+          defaultValue: 0,
+          description: stripIndent`
+         Desired corner radius in pixels. Results in an image with rounded corners.
+         Pass \`-1\` for a full circle/ellipse.`,
         },
       },
       resolve(image, options) {

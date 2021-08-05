@@ -86,6 +86,10 @@ interface IWorkerInfo<T> {
   currentTask?: TaskInfo<T>
 }
 
+export interface IPublicWorkerInfo {
+  workerId: number
+}
+
 /**
  * Worker pool is a class that allow you to queue function execution across multiple
  * child processes, in order to parallelize work. It accepts absolute path to worker module
@@ -124,7 +128,7 @@ export class WorkerPool<
     (msg: MessagesFromChild, workerId: number) => void
   > = []
 
-  constructor(workerPath: string, options?: IWorkerOptions) {
+  constructor(private workerPath: string, private options?: IWorkerOptions) {
     const single: Partial<WorkerPool<WorkerModuleExports>["single"]> = {}
     const all: Partial<WorkerPool<WorkerModuleExports>["all"]> = {}
 
@@ -160,7 +164,11 @@ export class WorkerPool<
 
     this.single = single as WorkerPool<WorkerModuleExports>["single"]
     this.all = all as WorkerPool<WorkerModuleExports>["all"]
+    this.startAll()
+  }
 
+  private startAll(): void {
+    const options = this.options
     for (let workerId = 1; workerId <= (options?.numWorkers ?? 1); workerId++) {
       const worker = fork(childWrapperPath, {
         cwd: process.cwd(),
@@ -168,7 +176,7 @@ export class WorkerPool<
           ...process.env,
           ...(options?.env ?? {}),
           GATSBY_WORKER_ID: workerId.toString(),
-          GATSBY_WORKER_MODULE_PATH: workerPath,
+          GATSBY_WORKER_MODULE_PATH: this.workerPath,
         },
         // Suppress --debug / --inspect flags while preserving others (like --harmony).
         execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
@@ -274,9 +282,25 @@ export class WorkerPool<
       for (const taskNode of this.taskQueue) {
         taskNode.value.reject(new Error(`Worker exited before finishing task`))
       }
+      this.workers = []
+      this.idleWorkers = new Set()
     })
 
     return results
+  }
+
+  /**
+   * Kills all running worker processes and spawns a new pool of processes
+   */
+  async restart(): Promise<void> {
+    await Promise.all(this.end())
+    this.startAll()
+  }
+
+  getWorkerInfo(): Array<IPublicWorkerInfo> {
+    return this.workers.map(worker => {
+      return { workerId: worker.workerId }
+    })
   }
 
   private checkForWork<T extends keyof WorkerModuleExports>(
