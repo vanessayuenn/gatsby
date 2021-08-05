@@ -63,7 +63,10 @@ const getBase64Image = (imageProps, reporter, cache, CACHE_FOLDER) => {
     return null
   }
 
-  const requestUrl = `https:${imageProps.baseUrl}?w=20&fm=jpg`
+  const requestUrl = createUrl(imageProps.baseUrl, {
+    width: 20,
+    toFormat: `jpg`,
+  })
 
   // Prefer to return data sync if we already have it
   const alreadyFetched = resolvedBase64Cache.get(requestUrl)
@@ -136,7 +139,7 @@ const createUrl = (imgUrl, options = {}) => {
   }
 
   // Note: qs will ignore keys that are `undefined`. `qs.stringify({a: undefined, b: null, c: 1})` => `b=&c=1`
-  return `${imgUrl}?${qs.stringify(urlArgs)}`
+  return `https:${imgUrl}?${qs.stringify(urlArgs)}`
 }
 exports.createUrl = createUrl
 
@@ -654,7 +657,7 @@ exports.extendNodeType = ({ type, cache, reporter, store }) => {
     }
 
     const extension = mimeTypeExtensions.get(contentType)
-    const url = `https:` + createUrl(imgUrl, options)
+    const url = createUrl(imgUrl, options)
     const name = path.basename(fileName, extension)
 
     const absolutePath = await fetchContentfulAsset({
@@ -706,7 +709,7 @@ exports.extendNodeType = ({ type, cache, reporter, store }) => {
       }
 
       const extension = mimeTypeExtensions.get(contentType)
-      const url = `https:` + createUrl(imgUrl, options)
+      const url = createUrl(imgUrl, options)
       const name = path.basename(fileName, extension)
 
       const absolutePath = await fetchContentfulAsset({
