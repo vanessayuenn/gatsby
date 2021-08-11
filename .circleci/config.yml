@@ -520,6 +520,13 @@ jobs:
 
       - <<: *attach_to_bootstrap
       - run:
+          name: Install node 12.13
+          command: |
+            nvm install 12.13.0
+            nvm alias default 12.13.0
+            nvm use 12.13.0
+            choco install yarn
+      - run:
           name: Rebuild packages for windows
           command: npm rebuild
       - run:
