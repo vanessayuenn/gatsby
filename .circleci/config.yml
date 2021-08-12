@@ -625,6 +625,7 @@ workflows:
           <<: *ignore_docs
           requires:
             - lint
+            - bootstrap
       - unit_tests_node12:
           <<: *ignore_docs
           requires:
