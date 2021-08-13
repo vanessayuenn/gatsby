@@ -48,7 +48,7 @@
     "@babel/core": "^7.14.8",
     "@babel/plugin-proposal-class-properties": "^7.14.0",
     "@babel/plugin-proposal-private-methods": "^7.14.0",
-    "@types/cache-manager": "^2.10.3",
+    "@types/cache-manager": "^3.4.2",
     "@types/ink": "^2.0.3",
     "@types/semver": "^7.3.8",
     "babel-plugin-import-globals": "^2.0.0",
@@ -57,10 +57,10 @@
     "babel-preset-gatsby-package": "^1.13.0-next.0",
     "cross-env": "^7.0.3",
     "identity-obj-proxy": "^3.0.0",
-    "react-test-renderer": "^16.14.0",
+    "react-test-renderer": "^17.0.2",
     "rimraf": "^3.0.2",
     "tree-kill": "^1.2.2",
-    "wait-on": "^4.0.2"
+    "wait-on": "^6.0.0"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-source-wordpress#readme",
   "keywords": [
